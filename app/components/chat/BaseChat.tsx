@@ -36,13 +36,15 @@ import type { ModelInfo } from '~/lib/modules/llm/types';
 import ProgressCompilation from './ProgressCompilation';
 import type { ProgressAnnotation } from '~/types/context';
 import type { ActionRunner } from '~/lib/runtime/action-runner';
-import { LOCAL_PROVIDERS } from '~/lib/stores/settings';
+import { LOCAL_PROVIDERS, updatePromptId } from '~/lib/stores/settings';
 import { SupabaseChatAlert } from '~/components/chat/SupabaseAlert';
 import { SupabaseConnection } from './SupabaseConnection';
 import { ExpoQrModal } from '~/components/workbench/ExpoQrModal';
 import { expoUrlAtom } from '~/lib/stores/qrCodeStore';
 import { useStore } from '@nanostores/react';
 import { StickToBottom, useStickToBottomContext } from '~/lib/hooks';
+import { HomeTabs } from './HomeTab';
+import { chatMetadata } from '~/lib/persistence';
 
 const TEXTAREA_MIN_HEIGHT = 76;
 
@@ -134,6 +136,22 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
     const [progressAnnotations, setProgressAnnotations] = useState<ProgressAnnotation[]>([]);
     const expoUrl = useStore(expoUrlAtom);
     const [qrModalOpen, setQrModalOpen] = useState(false);
+
+    useEffect(() => {
+      const openaiModel = import.meta.env.VITE_OPENAI_MODEL?.toString();
+      const providerName = import.meta.env.VITE_OPENAI_PROVIDER_NAME?.toString();
+
+      const model = modelList?.find((m) => m.name.toLocaleLowerCase() === openaiModel)?.name;
+      const provider = providerList?.find((p) => p.name.toLocaleLowerCase() === providerName || p.name === 'OpenAI');
+
+      if (!model || !provider) {
+        console.error('Model or provider not found');
+        return;
+      }
+
+      setModel?.(model);
+      setProvider?.(provider);
+    }, [modelList, providerList, setModel, setProvider]);
 
     useEffect(() => {
       if (expoUrl) {
@@ -258,6 +276,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
 
     const handleSendMessage = (event: React.UIEvent, messageInput?: string) => {
       if (sendMessage) {
+        updatePromptId(chatMetadata.get()?.promptId || 'default');
         sendMessage(event, messageInput);
 
         if (recognition) {
@@ -347,6 +366,9 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                 </p>
               </div>
             )}
+
+            <div className="w-full flex flex-col items-center">{<HomeTabs chatStarted={chatStarted} />}</div>
+
             <StickToBottom
               className={classNames('pt-6 px-2 sm:px-6 relative', {
                 'h-full flex flex-col modern-scrollbar': chatStarted,
@@ -443,7 +465,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                     <rect className={classNames(styles.PromptEffectLine)} pathLength="100" strokeLinecap="round"></rect>
                     <rect className={classNames(styles.PromptShine)} x="48" y="24" width="70" height="1"></rect>
                   </svg>
-                  <div>
+                  {/* <div>
                     <ClientOnly>
                       {() => (
                         <div className={isModelSettingsCollapsed ? 'hidden' : ''}>
@@ -472,7 +494,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                         </div>
                       )}
                     </ClientOnly>
-                  </div>
+                  </div> */}
                   <FilePreview
                     files={uploadedFiles}
                     imageDataList={imageDataList}
@@ -590,7 +612,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                         <IconButton title="Upload file" className="transition-all" onClick={() => handleFileUpload()}>
                           <div className="i-ph:paperclip text-xl"></div>
                         </IconButton>
-                        <IconButton
+                        {/* <IconButton
                           title="Enhance prompt"
                           disabled={input.length === 0 || enhancingPrompt}
                           className={classNames('transition-all', enhancingPrompt ? 'opacity-100' : '')}
@@ -604,7 +626,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                           ) : (
                             <div className="i-bolt:stars text-xl"></div>
                           )}
-                        </IconButton>
+                        </IconButton> */}
 
                         <SpeechRecognitionButton
                           isListening={isListening}
@@ -613,7 +635,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                           disabled={isStreaming}
                         />
                         {chatStarted && <ClientOnly>{() => <ExportChatButton exportChat={exportChat} />}</ClientOnly>}
-                        <IconButton
+                        {/* <IconButton
                           title="Model Settings"
                           className={classNames('transition-all flex items-center gap-1', {
                             'bg-bolt-elements-item-backgroundAccent text-bolt-elements-item-contentAccent':
@@ -626,7 +648,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                         >
                           <div className={`i-ph:caret-${isModelSettingsCollapsed ? 'right' : 'down'} text-lg`} />
                           {isModelSettingsCollapsed ? <span className="text-xs">{model}</span> : <span />}
-                        </IconButton>
+                        </IconButton> */}
                       </div>
                       {input.length > 3 ? (
                         <div className="text-xs text-bolt-elements-textTertiary">
@@ -635,7 +657,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                           a new line
                         </div>
                       ) : null}
-                      <SupabaseConnection />
+                      {/* <SupabaseConnection /> */}
                       <ExpoQrModal open={qrModalOpen} onClose={() => setQrModalOpen(false)} />
                     </div>
                   </div>
@@ -659,7 +681,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
 
                     handleSendMessage?.(event, messageInput);
                   })}
-                {!chatStarted && <StarterTemplates />}
+                {/* {!chatStarted && <StarterTemplates />} */}
               </div>
             </div>
           </div>

@@ -395,7 +395,17 @@ export const Workbench = memo(
                         <div className="i-ph:terminal" />
                         Toggle Terminal
                       </PanelHeaderButton>
-                      <DropdownMenu.Root>
+                      <PanelHeaderButton
+                        className="mr-1 text-sm"
+                        onClick={() => {
+                          workbenchStore.downloadZip();
+                        }}
+                      >
+                        <div className="i-ph:download-simple"></div>
+                        <span>Download Code</span>
+                      </PanelHeaderButton>
+
+                      {/* <DropdownMenu.Root>
                         <DropdownMenu.Trigger className="text-sm flex items-center gap-1 text-bolt-elements-item-contentDefault bg-transparent enabled:hover:text-bolt-elements-item-contentActive rounded-md p-1 enabled:hover:bg-bolt-elements-item-backgroundActive disabled:cursor-not-allowed">
                           <div className="i-ph:box-arrow-up" />
                           Sync & Export
@@ -449,7 +459,7 @@ export const Workbench = memo(
                             </div>
                           </DropdownMenu.Item>
                         </DropdownMenu.Content>
-                      </DropdownMenu.Root>
+                      </DropdownMenu.Root> */}
                     </div>
                   )}
 

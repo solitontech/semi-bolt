@@ -1,6 +1,8 @@
 import { getSystemPrompt } from './prompts/prompts';
 import optimized from './prompts/optimized';
 import { getFineTunedPrompt } from './prompts/new-prompt';
+import { getDCMPrompt } from './prompts/dcmHlGeneration';
+import { getIPMPrompt } from './prompts/ipmGeneration';
 
 export interface PromptOptions {
   cwd: string;
@@ -39,6 +41,16 @@ export class PromptLibrary {
       label: 'Optimized Prompt (experimental)',
       description: 'an Experimental version of the prompt for lower token usage',
       get: (options) => optimized(options),
+    },
+    dcmPrompt: {
+      label: 'DCM Prompt',
+      description: 'Prompt used for the generation of DCM HL pages',
+      get: (options) => getDCMPrompt(options),
+    },
+    ipmPrompt: {
+      label: 'IPM Prompt',
+      description: 'Prompt used for the generation of IPM HL pages',
+      get: (options) => getIPMPrompt(options),
     },
   };
   static getList() {

@@ -18,7 +18,7 @@ export function ExamplePrompts(sendMessage?: { (event: React.UIEvent, messageInp
           animation: '.25s ease-out 0s 1 _fade-and-move-in_g2ptj_1 forwards',
         }}
       >
-        {EXAMPLE_PROMPTS.map((examplePrompt, index: number) => {
+        {/* {EXAMPLE_PROMPTS.map((examplePrompt, index: number) => {
           return (
             <button
               key={index}
@@ -30,7 +30,7 @@ export function ExamplePrompts(sendMessage?: { (event: React.UIEvent, messageInp
               {examplePrompt.text}
             </button>
           );
-        })}
+        })} */}
       </div>
     </div>
   );
