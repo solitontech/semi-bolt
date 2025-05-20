@@ -66,7 +66,7 @@ export const HomeTabs = React.forwardRef(function HomeTabs({ chatStarted }: { ch
   return (
     <>
       <div className="w-full flex flex-col items-center px-4">
-        <div className="flex gap-4 mt-6 w-full max-w-chat">
+        <div className="flex gap-4 mt-6 w-full items-center justify-center">
           {chatStarted && (
             <div className="w-full bg-white rounded-lg shadow-sm">
               {TAB_DATA.map(
@@ -110,14 +110,45 @@ export const HomeTabs = React.forwardRef(function HomeTabs({ chatStarted }: { ch
             activeTab === tab.tabId && (
               <div className="animate-fade-in">
                 <div className="bg-bolt-elements-background-depth-2 p-6 rounded-xl border border-bolt-elements-borderColor mb-4 mt-4">
-                  <h2 className="text-xl font-semibold mb-4 text-bolt-elements-textPrimary">
-                    {tab.title} Creation Instructions
-                  </h2>
-                  <ul className="list-disc pl-5 space-y-2 text-bolt-elements-textSecondary">
-                    {tab.content.map((item, index) => (
-                      <li key={index}>{item}</li>
-                    ))}
-                  </ul>
+                  {appType === 'instrument' ? (
+                    <div className="flex items-center justify-center">
+                      <div className="text-center p-2">
+                        <h2 className="text-2xl font-bold text-bolt-elements-textPrimary mb-4">
+                          Instrument Panel Coming Soon
+                        </h2>
+                        <div className="mb-4">
+                          <svg
+                            className="w-10 h-10 mx-auto text-bolt-elements-textSecondary"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1.5}
+                              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                          <p className="text-bolt-elements-textSecondary">
+                            We're working on enhancing this feature for you. Stay tuned for updates!
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <h2 className="text-xl font-semibold mb-4 text-bolt-elements-textPrimary">
+                        {tab.title} Creation Instructions
+                      </h2>
+                      <ul className="list-disc pl-5 space-y-2 text-bolt-elements-textSecondary">
+                        {tab.content.map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
                 </div>
               </div>
             ),

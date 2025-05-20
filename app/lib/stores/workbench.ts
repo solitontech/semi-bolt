@@ -601,6 +601,62 @@ export class WorkbenchStore {
     return artifacts[id];
   }
 
+  // Inside your Remix component (browser)
+  async sendFilesToServer() {
+    const files = this.files.get();
+    const fileDir = import.meta.env.VITE_CODE_FILE_STORAGE_DIR;
+
+    const response = await fetch('/api/save-files', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        files,
+        fileDir,
+      }),
+    });
+
+    const result = (await response.json()) as {
+      success: boolean;
+      savedFiles?: string[];
+      error?: string;
+    };
+
+    if (result.success) {
+      console.log(`Saved ${result.savedFiles?.length} files.`);
+    } else {
+      console.error('Failed to save files:', result.error);
+      throw new Error(`Failed to save files: ${result.error}`);
+    }
+  }
+
+  async runNpmInstall() {
+    const fileDir = import.meta.env.VITE_CODE_FILE_STORAGE_DIR;
+
+    const response = await fetch('/api/run-npm-install', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        directory: fileDir,
+      }),
+    });
+
+    const result = (await response.json()) as {
+      success: boolean;
+      stdout?: string;
+      error?: string;
+    };
+
+    if (result.success) {
+      console.log('npm install ran successfully');
+      console.log(result.stdout);
+    } else {
+      console.error('npm install failed:', result.error);
+      throw new Error(`npm install failed: ${result.error}`);
+    }
+  }
+
   async downloadZip() {
     const zip = new JSZip();
     const files = this.files.get();

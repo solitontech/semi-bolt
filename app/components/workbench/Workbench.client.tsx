@@ -26,6 +26,7 @@ import useViewport from '~/lib/hooks';
 import { PushToGitHubDialog } from '~/components/@settings/tabs/connections/components/PushToGitHubDialog';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { usePreviewStore } from '~/lib/stores/previews';
+import { chatMetadata } from '~/lib/persistence';
 
 interface WorkspaceProps {
   chatStarted?: boolean;
@@ -395,17 +396,17 @@ export const Workbench = memo(
                         <div className="i-ph:terminal" />
                         Toggle Terminal
                       </PanelHeaderButton>
-                      <PanelHeaderButton
+                      {/* <PanelHeaderButton
                         className="mr-1 text-sm"
                         onClick={() => {
-                          workbenchStore.downloadZip();
+                          workbenchStore.sendFilesToServer();
                         }}
                       >
                         <div className="i-ph:download-simple"></div>
                         <span>Download Code</span>
-                      </PanelHeaderButton>
+                      </PanelHeaderButton> */}
 
-                      {/* <DropdownMenu.Root>
+                      <DropdownMenu.Root>
                         <DropdownMenu.Trigger className="text-sm flex items-center gap-1 text-bolt-elements-item-contentDefault bg-transparent enabled:hover:text-bolt-elements-item-contentActive rounded-md p-1 enabled:hover:bg-bolt-elements-item-backgroundActive disabled:cursor-not-allowed">
                           <div className="i-ph:box-arrow-up" />
                           Sync & Export
@@ -435,7 +436,50 @@ export const Workbench = memo(
                               <span>Download Code</span>
                             </div>
                           </DropdownMenu.Item>
-                          <DropdownMenu.Item
+                          {chatMetadata.get()?.appType === 'device' && (
+                            <DropdownMenu.Item
+                              className={classNames(
+                                'cursor-pointer flex items-center w-full px-4 py-2 text-sm text-bolt-elements-textPrimary hover:bg-bolt-elements-item-backgroundActive gap-2 rounded-md group relative',
+                              )}
+                              onClick={() => {
+                                workbenchStore
+                                  .sendFilesToServer()
+                                  .then(() => {
+                                    toast.success('Files synced successfully');
+                                    toast.loading('Running NPM install...', {
+                                      autoClose: false,
+                                      closeOnClick: false,
+                                      pauseOnHover: false,
+                                      draggable: true,
+                                      position: 'top-right',
+                                      icon: <div className="i-ph:spinner" />,
+                                    });
+
+                                    workbenchStore
+                                      .runNpmInstall()
+                                      .then(() => {
+                                        toast.dismiss();
+                                        toast.success('NPM install completed successfully');
+                                      })
+                                      .catch((error) => {
+                                        toast.dismiss();
+                                        toast.error('Failed to run NPM install');
+                                      });
+                                  })
+                                  .catch((error) => {
+                                    console.error('Error syncing files:', error);
+                                    toast.error('Failed to sync files');
+                                  });
+                              }}
+                            >
+                              <div className="flex items-center gap-2">
+                                <div className="i-ph:cloud-arrow-up"></div>
+                                <span>Sync & Install in DCM</span>
+                              </div>
+                            </DropdownMenu.Item>
+                          )}
+
+                          {/* <DropdownMenu.Item
                             className={classNames(
                               'cursor-pointer flex items-center w-full px-4 py-2 text-sm text-bolt-elements-textPrimary hover:bg-bolt-elements-item-backgroundActive gap-2 rounded-md group relative',
                             )}
@@ -446,8 +490,8 @@ export const Workbench = memo(
                               {isSyncing ? <div className="i-ph:spinner" /> : <div className="i-ph:cloud-arrow-down" />}
                               <span>{isSyncing ? 'Syncing...' : 'Sync Files'}</span>
                             </div>
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item
+                          </DropdownMenu.Item> */}
+                          {/* <DropdownMenu.Item
                             className={classNames(
                               'cursor-pointer flex items-center w-full px-4 py-2 text-sm text-bolt-elements-textPrimary hover:bg-bolt-elements-item-backgroundActive gap-2 rounded-md group relative',
                             )}
@@ -457,9 +501,9 @@ export const Workbench = memo(
                               <div className="i-ph:git-branch" />
                               Push to GitHub
                             </div>
-                          </DropdownMenu.Item>
+                          </DropdownMenu.Item> */}
                         </DropdownMenu.Content>
-                      </DropdownMenu.Root> */}
+                      </DropdownMenu.Root>
                     </div>
                   )}
 
