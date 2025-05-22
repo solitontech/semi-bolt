@@ -15,10 +15,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        run: echo "${{ secrets.DOCKER_SECRET }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build Docker image
-        run: docker build -t soliton-ip-semi-bolt:latest --target bolt-ai-production .
+        run: docker build -t curiosity2023/soliton-ip-semi-bolt:latest --target bolt-ai-production .
 
       - name: Push Docker image
-        run: docker push soliton-ip-semi-bolt:latest
+        run: docker push curiosity2023/soliton-ip-semi-bolt:latest
