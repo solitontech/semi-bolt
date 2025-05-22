@@ -3,7 +3,7 @@ name: Continuous Delivery | Docker Hub
 on:
   push:
     branches:
-      - 
+      - feat/add-codeowners-templates
       - soliton-stable
 
 jobs:
