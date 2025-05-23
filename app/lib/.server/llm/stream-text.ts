@@ -121,6 +121,8 @@ export async function streamText(props: {
       },
     }) ?? getSystemPrompt();
 
+  logger.info(`Using prompt ${promptId || 'default'}`);
+
   if (contextFiles && contextOptimization) {
     const codeContext = createFilesContext(contextFiles, true);
 
